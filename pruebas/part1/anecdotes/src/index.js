@@ -1,36 +1,27 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = ({handleClick, text}) => {
-
-  return (
-
-    <button onClick={handleClick}>{text}</button>
-
-  )
-
-}
-
 const App = (props) => {
-
   const [selected, setSelected] = useState(0)
-  const [votes, setVote] = useState(props.votes)
-  const setToSelected = (random) => {
-        
-        random = Math.floor(Math.random() * 5);
-        setSelected(random)
+  const [votes, setVotes] = useState( points )
+
+  const vote = () => {
+
+    const copyVotes = [
+      ...votes
+      
+    ]
+    
+    copyVotes[selected] = copyVotes[selected] + 1
+    return setVotes(copyVotes)
 
   }
 
-  
+  const nextAnecdote = () => {
 
-  const updateVotes = (value) => {
-    
-    const newVotes = [...votes]
+    const newAnecdote = Math.floor(Math.random() * 6)
 
-    newVotes[selected] = value
-    setVote(newVotes)
-
+    return setSelected(newAnecdote)
   }
 
   const mostVoted = votes.findIndex(vote => vote === Math.max(...votes))
@@ -39,16 +30,19 @@ const App = (props) => {
   return (
 
     <div>
-      <p>{props.anecdotes[selected]}</p>
-      <p>has {votes[selected]} votes</p>
-      <Button handleClick = {() => updateVotes(votes[selected]+1)} text='vote' />
-      <Button handleClick = {() => setToSelected(selected)} text='next anecdote' />
+      {props.anecdotes[selected]}<br/>
+      has {votes[selected]} votes
+      <p>
+        <button onClick = {vote}>vote</button>
+        <button onClick = {nextAnecdote}>next anecdote</button>
+      </p>
       <h1>Anecdote with most votes</h1>
       <p>{props.anecdotes[mostVoted]}</p>
     </div>
-
   )
 }
+
+const points = [0,0,0,0,0,0]
 
 const anecdotes = [
   'If it hurts, do it more often',
@@ -59,9 +53,7 @@ const anecdotes = [
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
 
-const votes = new Array(6+1).join('0').split('').map(parseFloat)
-
 ReactDOM.render(
-  <App anecdotes={anecdotes} votes={votes}/>,
+  <App anecdotes={anecdotes} points={points} />,
   document.getElementById('root')
 )
