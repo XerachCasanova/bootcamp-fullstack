@@ -2,52 +2,82 @@ import React, { useState, useEffect } from 'react'
 import Form from './components/Form'
 import Person from './components/Person'
 import Field from './components/Field'
-import axios from 'axios'
+import Notification from './components/Notification'
+import personsService from './services/persons'
+
+const MESSAGE_TYPE_ERROR = 'ERROR'
+const MESSAGE_TYPE_ADVICE = 'ADVICE'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterName, setFilterName] = useState('')
+  const [messagePack, setMessagePack] = useState(null)
 
-  const hook = () => {
 
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+  const hookGetAllPersons = () => {
+
+    personsService
+      .getAll()
+      .then(listPersons => {
+        setPersons(listPersons)
       })
-    
+
   }
 
-  useEffect(hook, [])
+  useEffect(hookGetAllPersons, [])
 
   const addPerson = (event) => {
 
     event.preventDefault()
-
-
-    const newPerson = [
-      ...persons,
+    const newPerson = 
       {
         name: newName,
-        phone: newPhone,
+        number: newPhone,
       }
-    ]
 
-    const filter = persons.filter(person => person.name === newName)
+   
+    const filter = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())
 
-    if (filter.length > 0) {
-      window.alert(`$newName is already added to phonebook`)
+    if (filter.length > 0 && filter[0].number !== newPhone) {
+  
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+
+        const changedPerson = {...filter[0], number: newPhone}
+        personsService
+          .update(changedPerson.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id!==filter[0].id ? p : returnedPerson))
+
+          })
+          .catch(error => {
+            alert (`${filter[0].name} was already deleted from server`)
+            setPersons(persons.filter( p=> p.id!==filter[0].id))
+          })
+      }
+    } else if (filter.length > 0 && filter[0].number === newPhone)   {
+
+      window.alert(`${newName} is already added to phonebook`)
+
     } else if (newName.trim() === "") {
-      window.alert("field name cannot be empty")
-    }
-    else {
-      setPersons(newPerson)
-    }
 
-    setNewName('')
-    setNewPhone('')
+      window.alert("field name cannot be empty")
+
+    } else {
+
+      personsService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+        setNewPhone('')
+        })
+
+        setMessagePack([`Added ${newName} `, MESSAGE_TYPE_ADVICE])
+        setTimeout(()=> {setMessagePack(null)}, 5000)
+
+    }
 
   }
 
@@ -63,8 +93,6 @@ const App = () => {
 
   const handleFilterChange = (event) => {
 
-    //const personsFilteredByName = filteredByNames.filter(person => person.name === filteredByNames)
-
     setFilterName(event.target.value)
 
   }
@@ -78,17 +106,36 @@ const App = () => {
 
   } else {
 
-    console.log(filterName)
-
     personsFilteredByName = persons.filter(person => person.name.toLowerCase().indexOf(filterName.toLowerCase()) > -1)
+
   }
 
+  const deletePerson = (person) => {
+    if (window.confirm(`delete ${person.name}?`)) {
+      personsService
+        .remove(person.id)
+        .then(
+          setMessagePack([`Information of ${person.name} has already been removed from server `, MESSAGE_TYPE_ERROR]),
+          setTimeout(()=> {setMessagePack(null)}, 5000),
+          setPersons(persons.filter(p => p.id != person.id)),
+          
+        )
+        .catch(error => {
+          alert (`${person.name} was already deleted from server`)
+          setPersons(persons.filter( p=> p.id!==person.id))
+        })
 
+    }
+    
+
+}
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification messagePack={messagePack} />
       <Field key="filter" label="filter shown with" value={filterName} handleChange={handleFilterChange} />
+      <h2>Add a new Person</h2>
       <Form action={addPerson}
         fieldHandler={[
           {
@@ -106,7 +153,7 @@ const App = () => {
         } />
       <h2>Numbers</h2>
       <ul>
-        {personsFilteredByName.map(person => <Person key={person.name} name={person.name} phone={person.phone} />)}
+        {personsFilteredByName.map(person => <Person key={person.id} person={person} actionDelete={deletePerson} />)}
       </ul>
     </div>
   )
