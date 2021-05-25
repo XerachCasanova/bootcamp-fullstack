@@ -31,32 +31,42 @@ const App = () => {
   const addPerson = (event) => {
 
     event.preventDefault()
-    const newPerson = 
-      {
-        name: newName,
-        number: newPhone,
-      }
+    const newPerson =
+    {
+      name: newName,
+      number: newPhone,
+    }
 
-   
+
     const filter = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())
 
     if (filter.length > 0 && filter[0].number !== newPhone) {
-  
+
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
 
-        const changedPerson = {...filter[0], number: newPhone}
+        const changedPerson = { ...filter[0], number: newPhone }
+
         personsService
           .update(changedPerson.id, changedPerson)
+
           .then(returnedPerson => {
-            setPersons(persons.map(p => p.id!==filter[0].id ? p : returnedPerson))
+            setPersons(prevPersons => (prevPersons.map(p => p.id !== filter[0].id ? p : returnedPerson)))
 
           })
           .catch(error => {
-            alert (`${filter[0].name} was already deleted from server`)
-            setPersons(persons.filter( p=> p.id!==filter[0].id))
+            if (error.response.data.error) {
+              const e = error.response.data.error
+              setMessagePack([e, MESSAGE_TYPE_ERROR])
+              setTimeout(() => { setMessagePack(null) }, 5000)
+            } else if (error.response.status === 404) {
+
+              alert(`${filter[0].name} was already deleted from server`)
+              setPersons(persons.filter(p => p.id !== filter[0].id))
+
+            }
           })
       }
-    } else if (filter.length > 0 && filter[0].number === newPhone)   {
+    } else if (filter.length > 0 && filter[0].number === newPhone) {
 
       window.alert(`${newName} is already added to phonebook`)
 
@@ -71,11 +81,18 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
-        setNewPhone('')
+          setNewPhone('')
+          setMessagePack([`Added ${newName} `, MESSAGE_TYPE_ADVICE])
+          setTimeout(() => { setMessagePack(null) }, 5000)
+
+        })
+        .catch(error => {
+          const e = error.response.data.error
+          setMessagePack([e, MESSAGE_TYPE_ERROR])
+          setTimeout(() => { setMessagePack(null) }, 5000)
         })
 
-        setMessagePack([`Added ${newName} `, MESSAGE_TYPE_ADVICE])
-        setTimeout(()=> {setMessagePack(null)}, 5000)
+
 
     }
 
@@ -116,19 +133,19 @@ const App = () => {
         .remove(person.id)
         .then(
           setMessagePack([`Information of ${person.name} has already been removed from server `, MESSAGE_TYPE_ERROR]),
-          setTimeout(()=> {setMessagePack(null)}, 5000),
+          setTimeout(() => { setMessagePack(null) }, 5000),
           setPersons(persons.filter(p => p.id != person.id)),
-          
+
         )
         .catch(error => {
-          alert (`${person.name} was already deleted from server`)
-          setPersons(persons.filter( p=> p.id!==person.id))
+          alert(`${person.name} was already deleted from server`)
+          setPersons(persons.filter(p => p.id !== person.id))
         })
 
     }
-    
 
-}
+
+  }
 
   return (
     <div>
