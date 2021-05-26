@@ -50,16 +50,14 @@ const App = () => {
     const handleFindCountries = (event) => {
         
         setFindCountries(event.target.value)
-        
         let newListCountries = []
 
             newListCountries = countries.filter(country => country.name.toLowerCase().indexOf(event.target.value.toLowerCase()) > -1)
             
             setListCountries(newListCountries)
-            
+            setWeather(undefined)
             setCountryFound(newListCountries.length === 1)
 
-            if (!countryFound) setWeather(undefined)
     
     }
 

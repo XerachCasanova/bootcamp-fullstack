@@ -3,7 +3,7 @@ const ListCountries = ({ countries, filter }) => {
     const handleShowCountry = (country, filter) => {
 
         filter = country
-  
+        console.log("probando", country, filter)
     }
 
 
