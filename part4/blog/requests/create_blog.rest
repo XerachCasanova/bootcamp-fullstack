@@ -1,11 +1,12 @@
-POST http://localhost:3003/api/blogs/ HTTP/1.1
+POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inhlcm1hbSIsImlkIjoiNjBiOWM0ZDkzMGRhYjcyZDI4MGQ3YjM5IiwiaWF0IjoxNjIyNzg4MTQyfQ.Mk5aFwib2lczm298a2BM3H9SDGQhE5PKhlu1mgwx-l8
 
 {
-    "title": "como afilar un lápiz",
-    "author": "Juanito Balderrama",
-    "url": "afilatulapiz.com",
-    "likes": 105
+    "title": "blog created with bearer auth",
+    "author": "jaime Rodríguez",
+    "url": "jaimerodriguez.com",
+    "likes": 5
 }
 
 
