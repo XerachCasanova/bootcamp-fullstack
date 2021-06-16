@@ -3,10 +3,10 @@ content-type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Inhlcm1hbSIsImlkIjoiNjBiOWM0ZDkzMGRhYjcyZDI4MGQ3YjM5IiwiaWF0IjoxNjIyNzg4NzU3fQ.PGd01KMRdAOPmbUSLp_2XjDWZ9FvUjlGf47E6xe3xAE
 
 {
-    "title": "blog created with bearer auth 2",
-    "author": "jaime Rodríguez",
-    "url": "jaimerodriguez.com",
-    "likes": 5
+    "title": "Probando otro blog",
+    "author": "Juan Artiles",
+    "url": "juanartiles.com",
+    "likes": 10
 }
 
 

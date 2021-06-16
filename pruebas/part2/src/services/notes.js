@@ -25,11 +25,9 @@ const update = (id, newObject) => {
 }
 
 /*export default {
-
     getAll: getAll,
     create: create,
     update: update
-
 }*/
 
 export default {getAll, create, update}
