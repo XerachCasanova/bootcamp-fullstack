@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
+import counterReducer from './reducers/counterReducer'
+import {createStore} from 'redux'
 
-const Button = ({handleClick, text}) => <button onClick={handleClick}>{text}</button>
+const Button = ({handleClick, text}) => <button onClick={() => store.dispatch({type: handleClick})}>{text}</button>
 
 
-const Statistics = ({good, neutral, bad}) => {
 
-  const total = good+neutral+bad
+const store = createStore(counterReducer)
+
+const Statistics = () => {
+  const statistics = store.getState()
+  const good = statistics.good
+  const ok = statistics.ok
+  const bad = statistics.bad
+  const total = good+ok+bad
   
   
   if (total === 0){
@@ -19,7 +27,6 @@ const Statistics = ({good, neutral, bad}) => {
 
   }
 
-
   return (
     <div>
       <table>
@@ -30,7 +37,7 @@ const Statistics = ({good, neutral, bad}) => {
           </tr>
           <tr>
             <td>neutral</td>
-            <td>{neutral}</td>
+            <td>{ok}</td>
           </tr>
           <tr>
             <td>bad</td>
@@ -58,40 +65,29 @@ const Statistics = ({good, neutral, bad}) => {
 
 const App = () => {
   // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
 
-
-  const setToGood = newValue => {
-    setGood(newValue)
-  }
-
-  const setToNeutral = newValue => {
-    setNeutral(newValue)
-  }
-
-  const setToBad = newValue => {
-    setBad(newValue)
-  }
 
   const textGood='good'
   const textNeutral='neutral'
   const textBad='bad'
   
+  
   return (
     <div>
 
       <h1>give feedback</h1>
-      <Button handleClick = {() => setToGood(good + 1)} text = {textGood} />
-      <Button handleClick = {() => setToNeutral(neutral +1)} text = {textNeutral} />
-      <Button handleClick = {() => setToBad(bad+1)} text = {textBad} />
+      <Button handleClick = 'GOOD' text = {textGood} />
+      <Button handleClick = 'OK' text = {textNeutral} />
+      <Button handleClick = 'BAD' text = {textBad} />
       <h1>statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <Statistics  />
     </div>
   )
 }
 
-ReactDOM.render(<App />, 
-  document.getElementById('root')
-)
+const renderApp = () => {
+  ReactDOM.render(<App />, document.getElementById('root'))
+}
+
+renderApp()
+store.subscribe(renderApp)

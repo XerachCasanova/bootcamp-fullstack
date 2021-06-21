@@ -1,18 +1,19 @@
 {
-  "name": "application",
+  "name": "redux-anecdotes",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@testing-library/user-event": "^7.2.1",
     "axios": "^0.21.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "deep-freeze": "0.0.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-redux": "^7.2.4",
-    "react-scripts": "4.0.3",
-    "redux": "^4.1.0",
-    "web-vitals": "^1.1.2"
+    "react-scripts": "3.3.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -22,10 +23,7 @@
     "server": "json-server -p3001 --watch db.json"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -40,7 +38,6 @@
     ]
   },
   "devDependencies": {
-    "deep-freeze": "0.0.1",
     "json-server": "^0.16.3",
     "redux-devtools-extension": "^2.13.9"
   }
