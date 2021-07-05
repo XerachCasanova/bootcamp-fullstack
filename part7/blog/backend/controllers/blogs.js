@@ -8,12 +8,16 @@ blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
     .populate('user', { username: 1, name: 1 })
+    .populate('comments', { content: 1 })
   response.json(blogs)
 })
 
 
 blogsRouter.get('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { content: 1 })
+
   if (blog) {
     response.json(blog.toJSON())
   } else {
@@ -80,7 +84,6 @@ blogsRouter.post('/', async (request, response) => {
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
-
 
   response.json(savedBlog)
 

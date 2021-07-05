@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef} from 'react'
 import axios from 'axios'
 
 
+
 const useField = (type) => {
   const [value, setValue] = useState('')
 
@@ -70,6 +71,9 @@ const useResource = (baseUrl) => {
 }
 
 const App = () => {
+  
+
+  
   const content = useField('text')
   const name = useField('text')
   const number = useField('text')
@@ -89,6 +93,7 @@ const App = () => {
   }
 
   return (
+
     <div>
       <h2>notes</h2>
       <form onSubmit={handleNoteSubmit}>
@@ -104,7 +109,9 @@ const App = () => {
       </form>
       {persons.map(n => <p key={n.id}>{n.name} {n.number}</p>)}
     </div>
+
   )
+  
 }
 
 export default App
